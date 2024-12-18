@@ -2,6 +2,7 @@
     "name": "cmatosbc/desired-patterns",
     "description": "Modern PHP Design Patterns Implementation",
     "type": "library",
+    "license": "gpl-3.0-or-later",
     "require": {
         "php": ">=8.2"
     },
