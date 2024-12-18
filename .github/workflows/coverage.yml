@@ -38,7 +38,18 @@ jobs:
         ')
         echo "coverage=$COVERAGE" >> $GITHUB_ENV
 
+    - name: Create initial Gist content
+      if: success()
+      uses: gists/gist-action@v1
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gist_id: 664fd72a90f996481f161d1d3a2f7285
+        file_name: coverage.json
+        content: '{"schemaVersion":1,"label":"coverage","message":"0%","color":"critical"}'
+        update_if_exists: false
+
     - name: Create Coverage Badge
+      if: success()
       uses: schneegans/dynamic-badges-action@v1.6.0
       with:
         auth: ${{ secrets.GIST_SECRET }}
@@ -47,3 +58,4 @@ jobs:
         label: coverage
         message: ${{ env.coverage }}%
         color: ${{ env.coverage >= 80 && 'success' || env.coverage >= 60 && 'yellow' || 'critical' }}
+        
