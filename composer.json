@@ -1,0 +1,25 @@
+{
+    "name": "cmatosbc/desired-patterns",
+    "description": "Really modern design patterns implementation for PHP.",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "10.2.*"
+    },
+    "require": {
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "DesiredPatterns\\": "src/",
+            "Examples\\": "examples/"
+        }
+    },
+    "license": "gpl-3.0-or-later",
+    "authors": [
+        {
+            "name": "Carlos",
+            "email": "carlos@example.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
