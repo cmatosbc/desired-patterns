@@ -76,6 +76,17 @@ class ServiceLocatorTest extends TestCase
         $this->assertFalse($this->locator->has('unknown.service'));
     }
 
+    public function testHasMethod(): void
+    {
+        $this->locator->register('test.service', fn() => new \stdClass());
+
+        // Test that the service exists
+        $this->assertTrue($this->locator->has('test.service'));
+
+        // Test that a non-registered service does not exist
+        $this->assertFalse($this->locator->has('non.existent.service'));
+    }
+
     public function testCanExtendExistingService(): void
     {
         $originalService = new \stdClass();

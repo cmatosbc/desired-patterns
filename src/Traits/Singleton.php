@@ -1,6 +1,6 @@
 <?php
 
-namespace Traits;
+namespace DesiredPatterns\Traits;
 
 trait Singleton
 {
@@ -18,7 +18,7 @@ trait Singleton
      * Creates or returns the singleton instance using
      * late static binding
      */
-    final public static function instance(): static
+    final public static function getInstance(): static
     {
         return self::$instance ??= new static();
     }

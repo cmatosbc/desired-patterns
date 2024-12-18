@@ -1,6 +1,6 @@
 <?php
 
-namespace Traits;
+namespace DesiredPatterns\Traits;
 
 trait Multiton
 {
@@ -17,9 +17,9 @@ trait Multiton
     /**
      * Creates or returns a named instance using late static binding
      */
-    final public static function instance(string $key): static
+    final public static function getInstance(string $key): static
     {
-        return self::$instances[$key] ??= new static();
+        return self::$instances[$key] ??= new static($key);
     }
 
     /**
