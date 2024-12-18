@@ -1,5 +1,5 @@
 {
-    "name": "cmatosbc/design-patterns",
+    "name": "cmatosbc/desired-patterns",
     "description": "Modern PHP Design Patterns Implementation",
     "type": "library",
     "require": {
@@ -26,7 +26,7 @@
     },
     "authors": [
         {
-            "name": "Carlos",
+            "name": "Carlos Matos",
             "email": "carlosarturmatos1977@gmail.com"
         }
     ]
