@@ -2,10 +2,10 @@
 
 namespace DesiredPatterns\Specifications\Composite;
 
-use DesiredPatterns\Specifications\AbstractSpecification;
 use DesiredPatterns\Contracts\SpecificationContract;
+use DesiredPatterns\Specifications\AbstractSpecification;
 
-readonly class AndSpecification extends AbstractSpecification
+class AndSpecification extends AbstractSpecification
 {
     public function __construct(
         private SpecificationContract $left,
@@ -14,7 +14,6 @@ readonly class AndSpecification extends AbstractSpecification
 
     public function isSatisfiedBy(mixed $candidate): bool
     {
-        return $this->left->isSatisfiedBy($candidate) 
-            && $this->right->isSatisfiedBy($candidate);
+        return $this->left->isSatisfiedBy($candidate) && $this->right->isSatisfiedBy($candidate);
     }
 }

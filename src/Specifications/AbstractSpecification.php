@@ -8,16 +8,16 @@ abstract class AbstractSpecification implements SpecificationContract
 {
     public function and(SpecificationContract $other): SpecificationContract
     {
-        return new AndSpecification($this, $other);
+        return new \DesiredPatterns\Specifications\Composite\AndSpecification($this, $other);
     }
 
     public function or(SpecificationContract $other): SpecificationContract
     {
-        return new OrSpecification($this, $other);
+        return new \DesiredPatterns\Specifications\Composite\OrSpecification($this, $other);
     }
 
     public function not(): SpecificationContract
     {
-        return new NotSpecification($this);
+        return new \DesiredPatterns\Specifications\Composite\NotSpecification($this);
     }
 }
