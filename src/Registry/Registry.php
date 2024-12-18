@@ -4,7 +4,7 @@ namespace DesiredPatterns\Registry;
 
 /**
  * Registry Pattern Implementation
- * 
+ *
  * The Registry pattern provides a global point of access to data throughout an application.
  * It is implemented as a singleton to ensure only one instance exists.
  */
@@ -15,7 +15,9 @@ class Registry
     /**
      * Private constructor to prevent direct instantiation
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * Reset the registry (mainly for testing purposes)
@@ -35,7 +37,7 @@ class Registry
 
     /**
      * Get a value from the registry
-     * 
+     *
      * @throws \RuntimeException if the key doesn't exist
      */
     public static function get(string $key): mixed

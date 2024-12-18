@@ -6,7 +6,7 @@ interface CommandBusContract
 {
     /**
      * Dispatch a command
-     * 
+     *
      * @template T
      * @param CommandContract $command
      * @return T
@@ -15,7 +15,7 @@ interface CommandBusContract
 
     /**
      * Register a handler for a command
-     * 
+     *
      * @param class-string<CommandContract> $commandClass
      * @param CommandHandlerContract $handler
      */

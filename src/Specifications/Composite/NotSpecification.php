@@ -9,7 +9,8 @@ class NotSpecification extends AbstractSpecification
 {
     public function __construct(
         private SpecificationContract $specification
-    ) {}
+    ) {
+    }
 
     public function isSatisfiedBy(mixed $candidate): bool
     {

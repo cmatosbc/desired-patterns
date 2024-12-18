@@ -11,7 +11,8 @@ abstract class AbstractCommand implements CommandContract
      */
     public function __construct(
         protected readonly array $payload = []
-    ) {}
+    ) {
+    }
 
     public function getPayload(): array
     {

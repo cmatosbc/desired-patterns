@@ -27,7 +27,7 @@ abstract class AbstractCommandHandler implements CommandHandlerContract
 
     /**
      * Process the command
-     * 
+     *
      * @template T
      * @param CommandContract $command
      * @return T

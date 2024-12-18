@@ -6,7 +6,7 @@ use DesiredPatterns\Contracts\ServiceProviderContract;
 
 /**
  * Service Locator Pattern Implementation
- * 
+ *
  * The Service Locator pattern is a design pattern used in software development to encapsulate
  * the processes involved in obtaining a service with a strong abstraction layer.
  */
@@ -24,7 +24,7 @@ class ServiceLocator
 
     /**
      * Array of registered service providers
-     * 
+     *
      * @var ServiceProviderContract[]
      */
     private array $providers = [];
@@ -49,7 +49,7 @@ class ServiceLocator
 
     /**
      * Resolve a service
-     * 
+     *
      * @throws \RuntimeException if the service is not found
      */
     public function resolve(string $id): mixed
@@ -85,7 +85,7 @@ class ServiceLocator
 
     /**
      * Extend an existing service
-     * 
+     *
      * @throws \RuntimeException if the service doesn't exist
      */
     public function extend(string $id, callable $callback): void

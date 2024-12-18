@@ -8,11 +8,13 @@ trait Singleton
      * Reference to singleton instance
      */
     private static ?self $instance = null;
-    
+
     /**
      * Private constructor to prevent direct instantiation
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * Creates or returns the singleton instance using
@@ -30,7 +32,8 @@ trait Singleton
     private function __clone(): void
     {
         throw new \RuntimeException(
-            'Singleton instance cannot be cloned');
+            'Singleton instance cannot be cloned'
+        );
     }
 
     /**
@@ -40,7 +43,8 @@ trait Singleton
     public function __wakeup(): void
     {
         throw new \RuntimeException(
-            'Singleton instance cannot be unserialized');
+            'Singleton instance cannot be unserialized'
+        );
     }
 
     /**
@@ -50,6 +54,7 @@ trait Singleton
     public function __sleep(): array
     {
         throw new \RuntimeException(
-            'Singleton instance cannot be serialized');
+            'Singleton instance cannot be serialized'
+        );
     }
 }

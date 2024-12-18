@@ -8,7 +8,7 @@ trait CommandHandlerTrait
 {
     /**
      * Check if the handler supports the given command
-     * 
+     *
      * @param class-string $commandClass Command class this handler supports
      */
     protected function supports(CommandContract $command): bool
@@ -19,7 +19,7 @@ trait CommandHandlerTrait
 
     /**
      * Get the command class this handler supports
-     * 
+     *
      * @return class-string
      */
     abstract protected function supportedCommandClass(): string;

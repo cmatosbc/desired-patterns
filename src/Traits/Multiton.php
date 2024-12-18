@@ -8,11 +8,13 @@ trait Multiton
      * Store of multiton instances
      */
     private static array $instances = [];
-    
+
     /**
      * Private constructor to prevent direct instantiation
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * Creates or returns a named instance using late static binding
@@ -53,7 +55,8 @@ trait Multiton
     private function __clone(): void
     {
         throw new \RuntimeException(
-            'Multiton instances cannot be cloned');
+            'Multiton instances cannot be cloned'
+        );
     }
 
     /**
@@ -63,7 +66,8 @@ trait Multiton
     public function __wakeup(): void
     {
         throw new \RuntimeException(
-            'Multiton instances cannot be unserialized');
+            'Multiton instances cannot be unserialized'
+        );
     }
 
     /**
@@ -73,6 +77,7 @@ trait Multiton
     public function __sleep(): array
     {
         throw new \RuntimeException(
-            'Multiton instances cannot be serialized');
+            'Multiton instances cannot be serialized'
+        );
     }
 }

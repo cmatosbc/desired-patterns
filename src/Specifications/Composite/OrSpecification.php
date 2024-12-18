@@ -10,7 +10,8 @@ class OrSpecification extends AbstractSpecification
     public function __construct(
         private SpecificationContract $left,
         private SpecificationContract $right
-    ) {}
+    ) {
+    }
 
     public function isSatisfiedBy(mixed $candidate): bool
     {
