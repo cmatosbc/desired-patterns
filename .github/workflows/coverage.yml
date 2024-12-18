@@ -40,13 +40,28 @@ jobs:
 
     - name: Create initial Gist content
       if: success()
-      uses: gists/gist-action@v1
+      uses: actions/github-script@v6
       with:
-        auth: ${{ secrets.GIST_SECRET }}
-        gist_id: 664fd72a90f996481f161d1d3a2f7285
-        file_name: coverage.json
-        content: '{"schemaVersion":1,"label":"coverage","message":"0%","color":"critical"}'
-        update_if_exists: false
+        github-token: ${{ secrets.GIST_SECRET }}
+        script: |
+          try {
+            await github.rest.gists.update({
+              gist_id: '664fd72a90f996481f161d1d3a2f7285',
+              files: {
+                'coverage.json': {
+                  content: JSON.stringify({
+                    schemaVersion: 1,
+                    label: 'coverage',
+                    message: process.env.coverage + '%',
+                    color: process.env.coverage >= 80 ? 'success' : process.env.coverage >= 60 ? 'yellow' : 'critical'
+                  })
+                }
+              }
+            });
+          } catch (error) {
+            console.log('Error updating gist:', error);
+            throw error;
+          }
 
     - name: Create Coverage Badge
       if: success()
