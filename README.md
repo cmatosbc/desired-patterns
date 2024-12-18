@@ -10,7 +10,7 @@ A collection of modern PHP design patterns implemented using PHP 8.2+ features. 
 ## Installation
 
 ```bash
-composer require your-vendor/desired-patterns
+composer require cmatosbc/desired-patterns
 ```
 
 ## Patterns Implemented
