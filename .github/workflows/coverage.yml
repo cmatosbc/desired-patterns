@@ -25,16 +25,17 @@ jobs:
     - name: Generate coverage report
       run: |
         vendor/bin/phpunit --coverage-clover clover.xml
-        COVERAGE=$(php -r '\
-          $xml = new SimpleXMLElement(file_get_contents("clover.xml")); \
-          $metrics = $xml->xpath("//metrics"); \
-          $totalElements = 0; \
-          $checkedElements = 0; \
-          foreach ($metrics as $metric) { \
-            $totalElements += (int)$metric["elements"]; \
-            $checkedElements += (int)$metric["coveredelements"]; \
-          } \
-          echo round(($checkedElements / $totalElements) * 100);')
+        COVERAGE=$(php -r '
+          $xml = new SimpleXMLElement(file_get_contents("clover.xml")); 
+          $metrics = $xml->xpath("//metrics"); 
+          $totalElements = 0; 
+          $checkedElements = 0; 
+          foreach ($metrics as $metric) { 
+            $totalElements += (int)$metric["elements"]; 
+            $checkedElements += (int)$metric["coveredelements"]; 
+          } 
+          echo round(($checkedElements / $totalElements) * 100);
+        ')
         echo "coverage=$COVERAGE" >> $GITHUB_ENV
 
     - name: Create Coverage Badge
