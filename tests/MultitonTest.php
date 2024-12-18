@@ -43,6 +43,24 @@ class MultitonTest extends TestCase
         // Check for a non-existent instance
         $this->assertFalse(TestMultiton::hasInstance('second'));
     }
+
+    public function testCloneThrowsException()
+    {
+        $this->expectException(\Error::class);
+        $this->expectExceptionMessage('Call to private Tests\Traits\TestMultiton::__clone() from scope Tests\Traits\MultitonTest');
+        
+        $instance = TestMultiton::getInstance('test');
+        clone $instance;
+    }
+
+    public function testSerializationThrowsException()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Multiton instances cannot be serialized');
+        
+        $instance = TestMultiton::getInstance('test');
+        serialize($instance);
+    }
 }
 
 class TestMultiton

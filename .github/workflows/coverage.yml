@@ -51,7 +51,7 @@ jobs:
                 'coverage.json': {
                   content: JSON.stringify({
                     schemaVersion: 1,
-                    label: 'coverage',
+                    label: 'Code Coverage',
                     message: process.env.coverage + '%',
                     color: process.env.coverage >= 80 ? 'success' : process.env.coverage >= 60 ? 'yellow' : 'critical'
                   })
@@ -73,4 +73,3 @@ jobs:
         label: coverage
         message: ${{ env.coverage }}%
         color: ${{ env.coverage >= 80 && 'success' || env.coverage >= 60 && 'yellow' || 'critical' }}
-        

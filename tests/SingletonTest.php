@@ -22,6 +22,24 @@ class SingletonTest extends TestCase
 
         $this->assertEquals('test value', $instance->someProperty);
     }
+
+    public function testCloneThrowsException()
+    {
+        $this->expectException(\Error::class);
+        $this->expectExceptionMessage('Call to private Tests\Traits\TestSingleton::__clone() from scope Tests\Traits\SingletonTest');
+        
+        $instance = TestSingleton::getInstance();
+        clone $instance;
+    }
+
+    public function testSerializationThrowsException()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Singleton instance cannot be serialized');
+        
+        $instance = TestSingleton::getInstance();
+        serialize($instance);
+    }
 }
 
 class TestSingleton
