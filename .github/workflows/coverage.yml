@@ -1,0 +1,48 @@
+name: Code Coverage
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        coverage: pcov
+        
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+      
+    - name: Generate coverage report
+      run: |
+        vendor/bin/phpunit --coverage-clover clover.xml
+        COVERAGE=$(php -r '\
+          $xml = new SimpleXMLElement(file_get_contents("clover.xml")); \
+          $metrics = $xml->xpath("//metrics"); \
+          $totalElements = 0; \
+          $checkedElements = 0; \
+          foreach ($metrics as $metric) { \
+            $totalElements += (int)$metric["elements"]; \
+            $checkedElements += (int)$metric["coveredelements"]; \
+          } \
+          echo round(($checkedElements / $totalElements) * 100);')
+        echo "coverage=$COVERAGE" >> $GITHUB_ENV
+
+    - name: Create Coverage Badge
+      uses: schneegans/dynamic-badges-action@v1.6.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 664fd72a90f996481f161d1d3a2f7285
+        filename: coverage.json
+        label: coverage
+        message: ${{ env.coverage }}%
+        color: ${{ env.coverage >= 80 && 'success' || env.coverage >= 60 && 'yellow' || 'critical' }}
