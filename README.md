@@ -111,7 +111,58 @@ $handler = new CreateUserHandler();
 $handler->handle($command);
 ```
 
-### 4. Registry Pattern
+### 4. Chain of Responsibility Pattern
+The Chain of Responsibility pattern lets you pass requests along a chain of handlers. Upon receiving a request, each handler decides either to process the request or to pass it to the next handler in the chain.
+
+```php
+use DesiredPatterns\Chain\AbstractHandler;
+
+// Create concrete handlers
+class PayPalHandler extends AbstractHandler
+{
+    public function handle($request)
+    {
+        if ($request['type'] === 'paypal') {
+            return [
+                'status' => 'success',
+                'message' => 'Payment processed via PayPal'
+            ];
+        }
+        
+        return parent::handle($request);
+    }
+}
+
+class CreditCardHandler extends AbstractHandler
+{
+    public function handle($request)
+    {
+        if ($request['type'] === 'credit_card') {
+            return [
+                'status' => 'success',
+                'message' => 'Payment processed via credit card'
+            ];
+        }
+        
+        return parent::handle($request);
+    }
+}
+
+// Usage
+$paypalHandler = new PayPalHandler();
+$creditCardHandler = new CreditCardHandler();
+
+// Build the chain
+$paypalHandler->setNext($creditCardHandler);
+
+// Process payment
+$result = $paypalHandler->handle([
+    'type' => 'credit_card',
+    'amount' => 100.00
+]);
+```
+
+### 5. Registry Pattern
 The Registry pattern provides a global point of access to objects or services throughout an application.
 
 ```php
@@ -138,7 +189,7 @@ Registry::remove('config.database');
 $keys = Registry::keys();
 ```
 
-### 5. Service Locator Pattern
+### 6. Service Locator Pattern
 The Service Locator pattern is a design pattern used to encapsulate the processes involved in obtaining a service with a strong abstraction layer.
 
 ```php
@@ -173,7 +224,7 @@ $locator->extend('database', function($service) {
 });
 ```
 
-### 6. Specification Pattern
+### 7. Specification Pattern
 The Specification pattern is used to create business rules that can be combined using boolean logic.
 
 ```php
