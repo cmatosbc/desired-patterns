@@ -6,7 +6,7 @@ use DesiredPatterns\Contracts\HandlerInterface;
 
 /**
  * Abstract base class for implementing the Chain of Responsibility pattern.
- * 
+ *
  * This class provides the basic structure for handling requests through a chain
  * of handler objects. Each handler decides either to process the request or
  * to pass it along the chain.
@@ -40,7 +40,7 @@ abstract class AbstractHandler implements HandlerInterface
         if ($this->nextHandler) {
             return $this->nextHandler->handle($request);
         }
-        
+
         throw new \Exception(
             sprintf('No handler found for request: %s', json_encode($request))
         );
