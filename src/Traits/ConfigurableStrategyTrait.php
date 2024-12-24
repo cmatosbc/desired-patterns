@@ -26,7 +26,7 @@ trait ConfigurableStrategyTrait
      * @var string[]
      */
     protected array $requiredOptions = [];
-    
+
     /**
      * Configure the strategy with options
      *
@@ -38,7 +38,7 @@ trait ConfigurableStrategyTrait
         $this->validateOptions($options);
         $this->options = array_merge($this->options, $options);
     }
-    
+
     /**
      * Validate that all required options are present
      *
@@ -54,7 +54,7 @@ trait ConfigurableStrategyTrait
             );
         }
     }
-    
+
     /**
      * Get an option value with a default fallback
      *

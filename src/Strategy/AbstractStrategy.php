@@ -20,7 +20,7 @@ abstract class AbstractStrategy implements StrategyInterface
      * @var array<string, mixed>
      */
     protected array $options = [];
-    
+
     /**
      * Configure the strategy with optional parameters
      *
@@ -30,7 +30,7 @@ abstract class AbstractStrategy implements StrategyInterface
     {
         $this->options = array_merge($this->options, $options);
     }
-    
+
     /**
      * Default validation implementation that always returns true
      * Override this method in concrete strategies to implement specific validation logic
@@ -42,7 +42,7 @@ abstract class AbstractStrategy implements StrategyInterface
     {
         return true;
     }
-    
+
     /**
      * Determine if this strategy can handle the given data
      *

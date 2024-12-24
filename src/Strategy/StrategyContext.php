@@ -28,7 +28,7 @@ class StrategyContext
      * Default strategy to use when no other strategy matches
      */
     private ?StrategyInterface $defaultStrategy = null;
-    
+
     /**
      * Add a strategy with optional configuration
      *
@@ -42,7 +42,7 @@ class StrategyContext
         $this->strategies[] = $strategy;
         return $this;
     }
-    
+
     /**
      * Set a default strategy to use when no other strategy matches
      *
@@ -54,7 +54,7 @@ class StrategyContext
         $this->defaultStrategy = $strategy;
         return $this;
     }
-    
+
     /**
      * Execute the appropriate strategy for the given data
      *
@@ -65,14 +65,14 @@ class StrategyContext
     public function executeStrategy(array $data): mixed
     {
         $strategy = $this->resolveStrategy($data);
-        
+
         if (!$strategy->validate($data)) {
             throw new RuntimeException('Invalid data for strategy execution');
         }
-        
+
         return $strategy->execute($data);
     }
-    
+
     /**
      * Find the first strategy that supports the given data
      *
@@ -87,11 +87,11 @@ class StrategyContext
                 return $strategy;
             }
         }
-        
+
         if ($this->defaultStrategy !== null) {
             return $this->defaultStrategy;
         }
-        
+
         throw new RuntimeException('No suitable strategy found for the given data');
     }
 }
