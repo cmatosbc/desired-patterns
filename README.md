@@ -1,6 +1,6 @@
 # Modern PHP Design Patterns
 
-[![PHP Lint](https://github.com/cmatosbc/desired-patterns/actions/workflows/lint.yml/badge.svg)](https://github.com/cmatosbc/desired-patterns/actions/workflows/lint.yml) [![PHPUnit Tests](https://github.com/cmatosbc/desired-patterns/actions/workflows/phpunit.yml/badge.svg)](https://github.com/cmatosbc/desired-patterns/actions/workflows/phpunit.yml) [![PHP Composer](https://github.com/cmatosbc/desired-patterns/actions/workflows/composer.yml/badge.svg)](https://github.com/cmatosbc/desired-patterns/actions/workflows/composer.yml) ![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/cmatosbc/664fd72a90f996481f161d1d3a2f7285/raw/coverage.json)
+[![PHP Lint](https://github.com/cmatosbc/desired-patterns/actions/workflows/lint.yml/badge.svg)](https://github.com/cmatosbc/desired-patterns/actions/workflows/lint.yml) [![PHPUnit Tests](https://github.com/cmatosbc/desired-patterns/actions/workflows/phpunit.yml/badge.svg)](https://github.com/cmatosbc/desired-patterns/actions/workflows/phpunit.yml) [![PHP Composer](https://github.com/cmatosbc/desired-patterns/actions/workflows/composer.yml/badge.svg)](https://github.com/cmatosbc/desired-patterns/actions/workflows/composer.yml) ![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/cmatosbc/664fd72a90f996481f161d1d3a2f7285/rawgit/coverage.json)
 
 A collection of modern PHP design patterns implemented using PHP 8.2+ features. Sexier than older implementations and more readable than ever.
 
@@ -266,6 +266,181 @@ if ($canAccessContent->isSatisfiedBy($user)) {
     // Allow access
 }
 ```
+
+## 8. Strategy Pattern
+
+The Strategy pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. It lets the algorithm vary independently from clients that use it.
+
+### Real-World Examples
+
+1. **Payment Processing**
+   - Different payment methods (Credit Card, PayPal, Cryptocurrency)
+   - Each payment method has its own validation and processing logic
+   - System can switch between payment strategies based on user selection
+
+2. **Data Export**
+   - Multiple export formats (CSV, JSON, XML, PDF)
+   - Each format has specific formatting requirements
+   - Choose export strategy based on user preference or file type
+
+3. **Shipping Calculation**
+   - Various shipping providers (FedEx, UPS, DHL)
+   - Each provider has unique rate calculation algorithms
+   - Select provider based on destination, weight, or cost
+
+### Complete Example
+
+```php
+
+namespace Examples\Strategy\Payment;
+
+use DesiredPatterns\Strategy\AbstractStrategy;
+use DesiredPatterns\Traits\ConfigurableStrategyTrait;
+
+/**
+ * Credit Card Payment Strategy
+ */
+class CreditCardStrategy extends AbstractStrategy
+{
+    use ConfigurableStrategyTrait;
+
+    protected array $requiredOptions = ['api_key'];
+
+    public function supports(array $data): bool
+    {
+        return isset($data['payment_method']) 
+            && $data['payment_method'] === 'credit_card';
+    }
+
+    public function validate(array $data): bool
+    {
+        return isset($data['card_number'])
+            && isset($data['expiry'])
+            && isset($data['cvv']);
+    }
+
+    public function execute(array $data): array
+    {
+        // Process credit card payment
+        return [
+            'status' => 'success',
+            'transaction_id' => uniqid('cc_'),
+            'method' => 'credit_card',
+            'amount' => $data['amount']
+        ];
+    }
+}
+
+/**
+ * PayPal Payment Strategy
+ */
+class PayPalStrategy extends AbstractStrategy
+{
+    use ConfigurableStrategyTrait;
+
+    protected array $requiredOptions = ['client_id', 'client_secret'];
+
+    public function supports(array $data): bool
+    {
+        return isset($data['payment_method']) 
+            && $data['payment_method'] === 'paypal';
+    }
+
+    public function validate(array $data): bool
+    {
+        return isset($data['paypal_email']) 
+            && isset($data['amount']);
+    }
+
+    public function execute(array $data): array
+    {
+        // Process PayPal payment
+        return [
+            'status' => 'success',
+            'transaction_id' => uniqid('pp_'),
+            'method' => 'paypal',
+            'amount' => $data['amount']
+        ];
+    }
+}
+
+/**
+ * Cryptocurrency Payment Strategy
+ */
+class CryptoStrategy extends AbstractStrategy
+{
+    use ConfigurableStrategyTrait;
+
+    protected array $requiredOptions = ['wallet_address'];
+
+    public function supports(array $data): bool
+    {
+        return isset($data['payment_method']) 
+            && $data['payment_method'] === 'crypto';
+    }
+
+    public function validate(array $data): bool
+    {
+        return isset($data['crypto_address']) 
+            && isset($data['crypto_currency']);
+    }
+
+    public function execute(array $data): array
+    {
+        // Process crypto payment
+        return [
+            'status' => 'success',
+            'transaction_id' => uniqid('crypto_'),
+            'method' => 'crypto',
+            'amount' => $data['amount'],
+            'currency' => $data['crypto_currency']
+        ];
+    }
+}
+
+// Usage Example
+$context = new StrategyContext();
+
+// Configure payment strategies
+$context->addStrategy(
+    new CreditCardStrategy(),
+    ['api_key' => 'sk_test_123']
+)
+->addStrategy(
+    new PayPalStrategy(),
+    [
+        'client_id' => 'client_123',
+        'client_secret' => 'secret_456'
+    ]
+)
+->addStrategy(
+    new CryptoStrategy(),
+    ['wallet_address' => '0x123...']
+);
+
+// Process a credit card payment
+$ccPayment = $context->executeStrategy([
+    'payment_method' => 'credit_card',
+    'amount' => 99.99,
+    'card_number' => '4242424242424242',
+    'expiry' => '12/25',
+    'cvv' => '123'
+]);
+
+// Process a PayPal payment
+$ppPayment = $context->executeStrategy([
+    'payment_method' => 'paypal',
+    'amount' => 149.99,
+    'paypal_email' => 'customer@example.com'
+]);
+
+// Process a crypto payment
+$cryptoPayment = $context->executeStrategy([
+    'payment_method' => 'crypto',
+    'amount' => 199.99,
+    'crypto_address' => '0x456...',
+    'crypto_currency' => 'ETH'
+]);
 
 ## Testing
 
