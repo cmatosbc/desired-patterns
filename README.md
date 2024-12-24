@@ -1,6 +1,6 @@
 # Modern PHP Design Patterns
 
-[![PHP Lint](https://github.com/cmatosbc/desired-patterns/actions/workflows/lint.yml/badge.svg)](https://github.com/cmatosbc/desired-patterns/actions/workflows/lint.yml) [![PHPUnit Tests](https://github.com/cmatosbc/desired-patterns/actions/workflows/phpunit.yml/badge.svg)](https://github.com/cmatosbc/desired-patterns/actions/workflows/phpunit.yml) [![PHP Composer](https://github.com/cmatosbc/desired-patterns/actions/workflows/composer.yml/badge.svg)](https://github.com/cmatosbc/desired-patterns/actions/workflows/composer.yml) ![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/cmatosbc/664fd72a90f996481f161d1d3a2f7285/rawgit/coverage.json)
+[![PHP Lint](https://github.com/cmatosbc/desired-patterns/actions/workflows/lint.yml/badge.svg)](https://github.com/cmatosbc/desired-patterns/actions/workflows/lint.yml) [![PHPUnit Tests](https://github.com/cmatosbc/desired-patterns/actions/workflows/phpunit.yml/badge.svg)](https://github.com/cmatosbc/desired-patterns/actions/workflows/phpunit.yml) [![PHP Composer](https://github.com/cmatosbc/desired-patterns/actions/workflows/composer.yml/badge.svg)](https://github.com/cmatosbc/desired-patterns/actions/workflows/composer.yml) ![Code Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/cmatosbc/664fd72a90f996481f161d1d3a2f7285/raw/coverage.json)
 
 A collection of modern PHP design patterns implemented using PHP 8.2+ features. Sexier than older implementations and more readable than ever.
 
@@ -441,6 +441,7 @@ $cryptoPayment = $context->executeStrategy([
     'crypto_address' => '0x456...',
     'crypto_currency' => 'ETH'
 ]);
+```
 
 ## Testing
 
