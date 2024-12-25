@@ -17,6 +17,17 @@ composer require cmatosbc/desired-patterns
 
 ## Patterns Implemented
 
+Quick Links:
+- [1. Singleton Pattern](#1-singleton-pattern)
+- [2. Multiton Pattern](#2-multiton-pattern)
+- [3. Command Pattern](#3-command-pattern)
+- [4. Chain of Responsibility Pattern](#4-chain-of-responsibility-pattern)
+- [5. Registry Pattern](#5-registry-pattern)
+- [6. Service Locator Pattern](#6-service-locator-pattern)
+- [7. Specification Pattern](#7-specification-pattern)
+- [8. Strategy Pattern](#8-strategy-pattern)
+- [9. State Pattern](#9-state-pattern)
+
 ### 1. Singleton Pattern
 The Singleton pattern ensures a class has only one instance and provides a global point of access to it. Our implementation uses a trait to make it reusable.
 
@@ -267,7 +278,7 @@ if ($canAccessContent->isSatisfiedBy($user)) {
 }
 ```
 
-## 8. Strategy Pattern
+### 8. Strategy Pattern
 
 The Strategy pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. It lets the algorithm vary independently from clients that use it.
 
@@ -442,6 +453,109 @@ $cryptoPayment = $context->executeStrategy([
     'crypto_currency' => 'ETH'
 ]);
 ```
+
+### 9. State Pattern
+The State pattern allows an object to alter its behavior when its internal state changes. The object will appear to change its class. Our implementation provides a flexible and type-safe way to handle state transitions with context validation.
+
+```php
+use DesiredPatterns\State\StateMachineTrait;
+use DesiredPatterns\State\AbstractState;
+
+// Define your states
+class PendingState extends AbstractState
+{
+    public function getName(): string
+    {
+        return 'pending';
+    }
+
+    protected array $allowedTransitions = ['processing', 'cancelled'];
+    
+    protected array $validationRules = [
+        'order_id' => 'required',
+        'amount' => 'type:double'
+    ];
+
+    public function handle(array $context): array
+    {
+        return [
+            'status' => 'pending',
+            'message' => 'Order is being validated',
+            'order_id' => $context['order_id']
+        ];
+    }
+}
+
+// Create your state machine
+class Order
+{
+    use StateMachineTrait;
+
+    public function __construct(string $orderId)
+    {
+        // Initialize states
+        $this->addState(new PendingState(), true)
+            ->addState(new ProcessingState())
+            ->addState(new ShippedState());
+
+        // Set initial context
+        $this->updateContext([
+            'order_id' => $orderId,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+    }
+
+    public function process(array $paymentDetails): array
+    {
+        $this->transitionTo('processing', $paymentDetails);
+        return $this->getCurrentState()->handle($this->getContext());
+    }
+}
+
+// Usage
+$order = new Order('ORD-123');
+
+try {
+    $result = $order->process([
+        'payment_id' => 'PAY-456',
+        'amount' => 99.99
+    ]);
+    echo $result['message']; // "Payment verified, preparing shipment"
+} catch (StateException $e) {
+    echo "Error: " . $e->getMessage();
+}
+```
+
+#### Real-World Example: Order Processing System
+
+The State pattern is perfect for managing complex workflows like order processing. Each state encapsulates its own rules and behaviors:
+
+1. **States**:
+   - `PendingState`: Initial state, validates order details
+   - `ProcessingState`: Handles payment verification
+   - `ShippedState`: Manages shipping details
+   - `DeliveredState`: Handles delivery confirmation
+   - `CancelledState`: Manages order cancellation
+
+2. **Features**:
+   - Context validation per state
+   - Type-safe state transitions
+   - State history tracking
+   - Fluent interface for state machine setup
+
+3. **Benefits**:
+   - Clean separation of concerns
+   - Easy to add new states
+   - Type-safe state transitions
+   - Automatic context validation
+   - Comprehensive state history
+
+4. **Use Cases**:
+   - Order Processing Systems
+   - Document Workflow Management
+   - Game State Management
+   - Payment Processing
+   - Task Management Systems
 
 ## Testing
 
