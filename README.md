@@ -27,6 +27,7 @@ Quick Links:
 - [7. Specification Pattern](#7-specification-pattern)
 - [8. Strategy Pattern](#8-strategy-pattern)
 - [9. State Pattern](#9-state-pattern)
+- [10. Pipeline Pattern](#10-pipeline-pattern)
 
 ### 1. Singleton Pattern
 The Singleton pattern ensures a class has only one instance and provides a global point of access to it. Our implementation uses a trait to make it reusable.
@@ -556,6 +557,164 @@ The State pattern is perfect for managing complex workflows like order processin
    - Game State Management
    - Payment Processing
    - Task Management Systems
+
+### 10. Pipeline Pattern
+
+The Pipeline pattern allows you to process data through a series of operations, where each operation takes input from the previous operation and produces output for the next one. This pattern is particularly useful for data transformation, validation, and processing workflows.
+
+#### Features
+- Fluent interface for operation chaining
+- Built-in error handling
+- Input validation
+- Type-safe operations with PHP 8.2+ generics
+- Side effect management
+- Conditional processing
+- Operation composition
+
+#### Basic Usage
+
+```php
+use DesiredPatterns\Pipeline\Pipeline;
+
+// Basic pipeline
+$result = Pipeline::of(5)
+    ->pipe(fn($x) => $x * 2)    // 10
+    ->pipe(fn($x) => $x + 1)    // 11
+    ->get();                     // Returns: 11
+
+// Pipeline with error handling
+$result = Pipeline::of($value)
+    ->try(
+        fn($x) => processData($x),
+        fn(\Throwable $e) => handleError($e)
+    )
+    ->get();
+
+// Pipeline with validation
+$result = Pipeline::of($data)
+    ->when(
+        fn($x) => $x > 0,
+        fn($x) => sqrt($x)
+    )
+    ->get();
+```
+
+#### Advanced Usage with PipelineBuilder
+
+The PipelineBuilder provides a more structured way to create complex pipelines with validation and error handling:
+
+```php
+use DesiredPatterns\Pipeline\PipelineBuilder;
+
+$builder = new PipelineBuilder();
+$result = $builder
+    ->withValidation(fn($x) => $x > 0, 'Value must be positive')
+    ->withValidation(fn($x) => $x < 100, 'Value must be less than 100')
+    ->withErrorHandling(fn(\Throwable $e) => handleValidationError($e))
+    ->add(fn($x) => $x * 2)
+    ->add(fn($x) => "Result: $x")
+    ->build(50)
+    ->get();
+```
+
+#### Real-World Example: Data Processing Pipeline
+
+Here's a real-world example of using the Pipeline pattern for processing user data:
+
+```php
+class UserDataProcessor
+{
+    private PipelineBuilder $pipeline;
+
+    public function __construct()
+    {
+        $this->pipeline = new PipelineBuilder();
+        $this->pipeline
+            ->withValidation(
+                fn($data) => isset($data['email']),
+                'Email is required'
+            )
+            ->withValidation(
+                fn($data) => filter_var($data['email'], FILTER_VALIDATE_EMAIL),
+                'Invalid email format'
+            )
+            ->withErrorHandling(fn(\Throwable $e) => [
+                'success' => false,
+                'error' => $e->getMessage()
+            ])
+            ->add(function($data) {
+                // Normalize email
+                $data['email'] = strtolower($data['email']);
+                return $data;
+            })
+            ->add(function($data) {
+                // Hash password if present
+                if (isset($data['password'])) {
+                    $data['password'] = password_hash(
+                        $data['password'],
+                        PASSWORD_DEFAULT
+                    );
+                }
+                return $data;
+            })
+            ->add(function($data) {
+                // Add metadata
+                $data['created_at'] = new DateTime();
+                $data['status'] = 'active';
+                return $data;
+            });
+    }
+
+    public function process(array $userData): array
+    {
+        return $this->pipeline
+            ->build($userData)
+            ->get();
+    }
+}
+
+// Usage
+$processor = new UserDataProcessor();
+
+// Successful case
+$result = $processor->process([
+    'email' => 'user@example.com',
+    'password' => 'secret123'
+]);
+// Returns: [
+//     'email' => 'user@example.com',
+//     'password' => '$2y$10$...',
+//     'created_at' => DateTime,
+//     'status' => 'active'
+// ]
+
+// Error case
+$result = $processor->process([
+    'email' => 'invalid-email'
+]);
+// Returns: [
+//     'success' => false,
+//     'error' => 'Invalid email format'
+// ]
+```
+
+#### Benefits
+1. **Separation of Concerns**: Each operation in the pipeline has a single responsibility.
+2. **Maintainability**: Easy to add, remove, or modify processing steps without affecting other parts.
+3. **Reusability**: Pipeline operations can be reused across different contexts.
+4. **Error Handling**: Built-in error handling makes it easy to manage failures.
+5. **Validation**: Input validation can be added at any point in the pipeline.
+6. **Type Safety**: PHP 8.2+ generics provide type safety throughout the pipeline.
+7. **Testability**: Each operation can be tested in isolation.
+
+#### Use Cases
+- Data transformation and normalization
+- Form validation and processing
+- API request/response handling
+- Image processing workflows
+- ETL (Extract, Transform, Load) operations
+- Document processing pipelines
+- Multi-step validation processes
 
 ## Testing
 
