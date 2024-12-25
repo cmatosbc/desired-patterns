@@ -2,4 +2,6 @@
 
 namespace DesiredPatterns\State;
 
-class StateException extends \Exception {}
+class StateException extends \Exception
+{
+}

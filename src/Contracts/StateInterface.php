@@ -4,7 +4,7 @@ namespace DesiredPatterns\Contracts;
 
 /**
  * Interface StateInterface
- * 
+ *
  * Defines the contract for all states in the system.
  * Each state implements how it handles various actions
  * and what the next state should be.

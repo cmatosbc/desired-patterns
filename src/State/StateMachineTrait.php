@@ -29,11 +29,11 @@ trait StateMachineTrait
     {
         $name = $state->getName();
         $this->states[$name] = $state;
-        
+
         if ($isInitial || $this->currentState === null) {
             $this->currentState = $name;
         }
-        
+
         return $this;
     }
 
@@ -52,7 +52,7 @@ trait StateMachineTrait
         }
 
         $currentState = $this->states[$this->currentState];
-        
+
         if (!$currentState->canTransitionTo($stateName, $this->context)) {
             throw new StateException(
                 "Cannot transition from {$this->currentState} to $stateName"
@@ -121,7 +121,7 @@ trait StateMachineTrait
     public function updateContext(array $context): self
     {
         $this->context = array_merge($this->context, $context);
-        
+
         // Validate against current state's rules
         if ($this->currentState !== null) {
             $currentState = $this->getCurrentState();
@@ -129,7 +129,7 @@ trait StateMachineTrait
                 throw new StateException('Invalid context for current state');
             }
         }
-        
+
         return $this;
     }
 
@@ -171,17 +171,17 @@ trait StateMachineTrait
             }
 
             $value = $this->context[$key];
-            
+
             // Type validation
             if (str_starts_with($rule, 'type:')) {
                 $expectedType = substr($rule, 5);
                 $actualType = gettype($value);
-                
+
                 // Special handling for 'double' type
                 if ($expectedType === 'double' && is_numeric($value)) {
                     continue;
                 }
-                
+
                 if ($actualType !== $expectedType) {
                     return false;
                 }
