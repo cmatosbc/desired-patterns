@@ -28,6 +28,8 @@ Quick Links:
 - [8. Strategy Pattern](#8-strategy-pattern)
 - [9. State Pattern](#9-state-pattern)
 - [10. Pipeline Pattern](#10-pipeline-pattern)
+- [11. Object Pool Pattern](#11-object-pool-pattern)
+- [12. Null Object Pattern](#12-null-object-pattern)
 
 ### 1. Singleton Pattern
 The Singleton pattern ensures a class has only one instance and provides a global point of access to it. Our implementation uses a trait to make it reusable.
@@ -715,6 +717,166 @@ $result = $processor->process([
 - ETL (Extract, Transform, Load) operations
 - Document processing pipelines
 - Multi-step validation processes
+
+### 11. Object Pool Pattern
+The Object Pool pattern manages a fixed set of reusable objects that are expensive to create or consume significant resources. Our implementation uses PHP 8.2 features for type-safe object management and automatic cleanup.
+
+```php
+use DesiredPatterns\Contracts\PoolableInterface;
+use DesiredPatterns\Pool\ObjectPool;
+use DesiredPatterns\Pool\PoolFactory;
+
+// Define a poolable resource
+class DatabaseConnection implements PoolableInterface
+{
+    private ?PDO $connection = null;
+    
+    public function __construct(
+        private readonly string $dsn,
+        private readonly string $username,
+        private readonly string $password
+    ) {}
+    
+    public function reset(): void
+    {
+        if ($this->connection) {
+            $this->connection->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
+        }
+    }
+    
+    public function validate(): bool
+    {
+        try {
+            $this->connection?->query('SELECT 1');
+            return true;
+        } catch (PDOException) {
+            $this->connection = null;
+            return false;
+        }
+    }
+}
+
+// Use the pool
+$pool = PoolFactory::getPool(
+    'database',
+    DatabaseConnection::class,
+    [
+        'min_instances' => 2,
+        'max_instances' => 10,
+        'constructor_args' => [
+            'mysql:host=localhost;dbname=test',
+            'username',
+            'password'
+        ]
+    ]
+);
+
+// Acquire and use a connection
+$connection = $pool->acquire();
+try {
+    // Use the connection
+} finally {
+    $pool->release($connection);
+}
+```
+
+1. **Key Features**:
+   - Type-safe resource management
+   - Automatic resource cleanup using WeakMap
+   - Configurable pool sizes
+   - Resource validation and reset
+   - Usage statistics tracking
+
+2. **Use Cases**:
+   - Database connection pooling
+   - File handle management
+   - Network socket management
+   - Thread/Process pooling
+   - Memory-intensive object reuse
+
+### 12. Null Object Pattern
+The Null Object pattern provides an object with neutral ("null") behavior as an alternative to null references. Our implementation uses PHP 8.2 features for type-safe null handling and interface contracts.
+
+```php
+use DesiredPatterns\NullObject\NullableInterface;
+use DesiredPatterns\NullObject\AbstractNullObject;
+
+// Define the interface
+interface LoggerInterface extends NullableInterface
+{
+    public function log(string $level, string $message, array $context = []): void;
+    public function getLogs(): array;
+}
+
+// Real implementation
+class FileLogger implements LoggerInterface
+{
+    public function __construct(
+        private readonly string $logFile
+    ) {}
+    
+    public function log(string $level, string $message, array $context = []): void
+    {
+        file_put_contents(
+            $this->logFile,
+            "[$level] $message " . json_encode($context) . PHP_EOL,
+            FILE_APPEND
+        );
+    }
+    
+    public function getLogs(): array
+    {
+        return file($this->logFile);
+    }
+    
+    public function isNull(): bool
+    {
+        return false;
+    }
+}
+
+// Null implementation
+class NullLogger extends AbstractNullObject implements LoggerInterface
+{
+    public function log(string $level, string $message, array $context = []): void
+    {
+        // Do nothing
+    }
+    
+    public function getLogs(): array
+    {
+        return [];
+    }
+}
+
+// Usage
+class UserService
+{
+    public function __construct(
+        private readonly LoggerInterface $logger = new NullLogger()
+    ) {}
+    
+    public function createUser(string $username): void
+    {
+        // Create user...
+        $this->logger->log('info', 'User created', ['username' => $username]);
+    }
+}
+```
+
+1. **Key Features**:
+   - Type-safe null object implementation
+   - Interface-based contracts
+   - Abstract base class for null objects
+   - Explicit null checking through interface
+   - Zero-impact performance for null operations
+
+2. **Use Cases**:
+   - Optional service dependencies
+   - Testing and development environments
+   - Feature toggles and graceful degradation
+   - Default behavior implementation
+   - Error handling and logging
 
 ## Testing
 
