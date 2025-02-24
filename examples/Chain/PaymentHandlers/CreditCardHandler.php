@@ -3,6 +3,7 @@
 namespace Examples\Chain\PaymentHandlers;
 
 use DesiredPatterns\Chain\AbstractHandler;
+// Novo
 
 class CreditCardHandler extends AbstractHandler
 {
